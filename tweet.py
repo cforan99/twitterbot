@@ -66,8 +66,13 @@ def make_chains(master_string):
         #Filters out words starting with @ and https:// and adds other words to tweetionary
         if word1.startswith("@"):     
             word1 = word1[1:]
-        elif word1.startswith("https://") or word1.startswith("http://") :
-            pass 
+        
+        if word2.startswith("@"):     
+            word2 = word2[1:]
+
+        if ((word1.startswith("https://") or word1.startswith("http://")) 
+              and (word2.startswith("https://") or word2.startswith("http://"))):
+            pass
         else:
             key = (word1, word2)
             value = word3
@@ -100,12 +105,28 @@ def make_text(tweetionary):
     # Note that for long texts (like a full book), this might mean
     # it would run for a very long time.
 
-    word = choice(tweetionary[key])
-    words.append(word)
-    key = (key[1], word)
+        word = choice(tweetionary[key])
+        words.append(word)
+        key = (key[1], word)
+
+    text = " ".join(words)
+
+    # while len(text) > 140:
+    #     slice_index = min(text[-1:0:-1].index("."), 
+    #                       text[-1:0:-1].index("?"), 
+    #                       text[-1:0:-1].index("!"))
+    #     text = text[:-int(slice_index)]
+
+    return text
 
 user1_tweets = get_tweets(user1)
 user2_tweets = get_tweets(user2)
 all_tweets = mix_lists(user1_tweets, user2_tweets)
+tweetionary = make_chains(all_tweets)
+new_tweet = make_text(tweetionary)
+
+print new_tweet
+
+
 
 
