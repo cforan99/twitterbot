@@ -1,6 +1,10 @@
+import sys
 import os
-
 import twitter
+from random import choice
+
+user1 = sys.argv[1]
+user2 = sys.argv[2]
 
 api = twitter.Api(
     consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
@@ -13,7 +17,7 @@ api = twitter.Api(
 
 # Get tweets from one user's timeline
 
-def tweets_list(username):
+def get_tweets(username):
     """Gets all tweets for a user from the API and stores them in a list"""
 
     timeline_info = api.GetUserTimeline(screen_name=username)
@@ -62,7 +66,7 @@ def make_chains(master_string):
         #Filters out words starting with @ and https:// and adds other words to tweetionary
         if word1.startswith("@"):     
             word1 = word1[1:]
-        elif word1.startswith("https://"):
+        elif word1.startswith("https://") or word1.startswith("http://") :
             pass 
         else:
             key = (word1, word2)
@@ -73,5 +77,35 @@ def make_chains(master_string):
 
             tweetionary[key].append(value)
 
+    return tweetionary
+
+def make_text(tweetionary):
+    """Takes a dictionary of markov chains and returns random text"""
+
+    # Start with a capital letter
+    # Not really necessary for tweets
+
+    # keys_list = tweetionary.keys()
+    # capital_keys = [key for key in keys_list if key[0].istitle()]
+    # new_key = choice(capital_keys)
+    # text = [new_key[0], new_key[1]]
+
+    key = choice(tweetionary.keys())
+    words = [key[0], key[1]]
+
+    while key in tweetionary:
+    # Keep looping until we have a key that isn't in the chains
+    # (which would mean it was the end of our original text)
+    #
+    # Note that for long texts (like a full book), this might mean
+    # it would run for a very long time.
+
+    word = choice(tweetionary[key])
+    words.append(word)
+    key = (key[1], word)
+
+user1_tweets = get_tweets(user1)
+user2_tweets = get_tweets(user2)
+all_tweets = mix_lists(user1_tweets, user2_tweets)
 
 
