@@ -33,9 +33,19 @@ def mix_lists(list1, list2):
     """Alternates between lists adding each tweet to a master string"""
 
     #Find out which list is shorter and store that length as n
-    #for i in range(n): add list1[i] to master_list and add list2[i] to master string
+    n = min(len(list1), len(list2))
+
+    master_string = ""
+
+    for i in range(n): 
+        master_string += list1[i] + " "
+        master_string += list2[i] + " "
+
     #Disregard other tweets if one list is longer than the other so that one user 
     #doesn't take over the markov tweet.
+
+    return master_string
+
 
 def make_chains(master_string):
     """Takes the master_string and returns a dictionary of markov chains"""
